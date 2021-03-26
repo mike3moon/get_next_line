@@ -17,9 +17,9 @@
 # include <stdlib.h>
 # include <limits.h>
 
-int		get_next_line(int fd, char **line);
+int		get_next_line(int fd, char **line, char *temp);
 int		ret(char **line, char **next);
-char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strjoin(char *s1, char *s2);
 char	*ft_strdup(const char *s1, int l);
 char	*ft_strchr(const char *s, int c);
 size_t	ft_strlen(const char *s);

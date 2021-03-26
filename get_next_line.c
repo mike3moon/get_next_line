@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*str;
 	size_t	len;
@@ -22,6 +22,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if (!str)
 		return (0);
 	ft_strlcpy(str, s1, len);
+	free(s1);
 	ft_strlcat(str, s2, len);
 	return (str);
 }
@@ -33,17 +34,22 @@ char	*ft_strdup(const char *s1, int l)
 	s = malloc(l + 1);
 	if (!s)
 		return (0);
-	ft_memcpy(s, s1, l + 1);
-	s[l + 1] = 0;
+	ft_memcpy(s, s1, l);
+	s[l] = 0;
 	return (s);
 }
 
 int		ret(char **line, char **next, char *temp)
 {
+	char	*tmp;
+
 	if (temp)
 	{
 		*line = ft_strdup(*next, temp - *next);
-		*next = ++temp;
+		++temp;
+		tmp = ft_strdup(temp, ft_strlen(temp));
+		free(*next);
+		*next = tmp;
 		return (1);
 	}
 	if (*next)
@@ -65,11 +71,13 @@ int		get_next_line(int fd, char **line)
 
 	if (fd < 0 || !line || BUFFER_SIZE <= 0)
 		return (-1);
+	if (!(next[fd]))
+		next[fd] = ft_strdup("", 1);
 	while (!(temp = ft_strchr(next[fd], '\n'))
 	&& (size = read(fd, buf, BUFFER_SIZE) > 0))
 	{
 		buf[size] = 0;
-		next[fd] = ft_strjoin(next, buf);
+		next[fd] = ft_strjoin(next[fd], buf);
 	}
 	if (size < 0)
 		return (-1);
